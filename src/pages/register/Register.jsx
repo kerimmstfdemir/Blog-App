@@ -36,9 +36,9 @@ const Register = () => {
     }
 
     if(password.toString() === repeatPass.toString()){
-      setMatchPassword(false)
+      setMatchPassword(true)
     }else {
-      setMatchPassword(true);
+      setMatchPassword(false);
       alert("Entered passwords are different!")
     }
 
@@ -46,7 +46,11 @@ const Register = () => {
       alert("Name information has to be at least 3 characters!")
     }
 
-    if(!emailError && !passwordError && !matchPassword && (name.toString().length >= 3)){
+    if(!agreeTerms){
+      alert("Please agree all statements in Terms of service!")
+    }
+
+    if(agreeTerms && !emailError && !passwordError && matchPassword && (name.toString().length >= 3)){
       try {
         await createUserWithEmailAndPassword(auth, email, password)
         await updateProfile(auth.currentUser, {
