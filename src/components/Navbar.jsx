@@ -5,25 +5,28 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
-    const [loginInfo, setLoginInfo] = useState(false)
+    const { loginInformation } = useSelector((state) => state.loginInfos)
+    const navigate = useNavigate()
 
     return (
         <>
-            {loginInfo || <Box sx={{ flexGrow: 1 }}>
+            {loginInformation || <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontSize:"1.4rem" }}>
                             Blog App
                         </Typography>
-                        <Button style={{fontSize:"1.1rem"}} color="inherit">Login</Button>
-                        <Button style={{fontSize:"1.1rem"}} color="inherit">Register</Button>
+                        <Button style={{fontSize:"1.1rem"}} color="inherit" onClick={() => navigate("/login")}>Login</Button>
+                        <Button style={{fontSize:"1.1rem"}} color="inherit" onClick={() => navigate("/register")}>Register</Button>
                     </Toolbar>
                 </AppBar>
             </Box>}
 
-            {loginInfo && <NavbarAfterLogin />}
+            {loginInformation && <NavbarAfterLogin />}
         </>
     )
 }
