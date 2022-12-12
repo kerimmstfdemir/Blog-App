@@ -5,8 +5,11 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { auth } from "../../authentication/firebase"
 import { registerInfos } from "../../redux/features/registerSlice"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [ repeatPass, setRepeatPass ] = useState("")
   const [ agreeTerms, setAgreeTerms ] = useState(false)
   const [ emailError, setEmailError ] = useState(false)
@@ -56,6 +59,7 @@ const Register = () => {
         await updateProfile(auth.currentUser, {
           displayName: name
         })
+        navigate("/login")
         alert("Registration Successful!")
       } catch(error) {
         console.log(error.message)
@@ -63,8 +67,6 @@ const Register = () => {
     }
   }
 
-  console.log(registerInformations)
-  console.log(agreeTerms);
   return (
     <section className="vh-100" style={{backgroundColor: '#eee'}}>
         <div className="container h-100">
