@@ -1,5 +1,47 @@
+/* eslint-disable jsx-a11y/alt-text */
+import app from "../../authentication/firebase"
+import { getDatabase, ref, set, push } from "firebase/database"
+import { useEffect, useState } from "react"
+
 const NewPost = () => {
-  return (
+  const [postInfos, setPostInfos] = useState({
+    postTitle:"",
+    postContents:"",
+    imageURL:""
+  })
+
+  const [ titleError, setTitleError ] = useState(true)
+  const [ contentError, setContentError ] = useState(true)
+
+  console.log("titleError : ", titleError);
+  console.log("contentError : ", contentError);
+
+  const updateErrors = () => {
+    //? Post title control
+    if(postInfos.postTitle.toString().length < 3){
+      setTitleError(true)
+    }else{
+      setTitleError(false)
+    }
+
+    //? Post contents control
+    if(postInfos.postContents.toString().length < 20) {
+      setContentError(true)
+    }else {
+      setContentError(false)
+    }
+}
+
+const sendPost = () => {
+  if(!titleError && !contentError) {
+    console.log("posted", postInfos)
+  }else {
+    console.log("not posted!");
+  }
+}
+
+  console.log(postInfos);
+    return (
     <div className="modal" id="newpost" tabIndex={-1}>
       <div className="modal-dialog">
         <div className="modal-content">
@@ -13,20 +55,24 @@ const NewPost = () => {
             <form>
               <div className="form-group">
                 <label className="mb-2" htmlFor="posttitle">Post Title : </label>
-                <input type="text" className="form-control" id="posttitle" placeholder="Enter your post title..." />
+                <input type="text" className="form-control" id="posttitle" placeholder="Enter your post title..." onChange={(e) => setPostInfos({...postInfos, postTitle:e.target.value})}/>
               </div>
               <div class="form-group">
                 <label className="mt-2 mb-2" for="exampleFormControlTextarea1">Post Contents : </label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" onChange={(e) => setPostInfos({...postInfos, postContents:e.target.value})}></textarea>
               </div>
               <div className="form-group">
                 <label className="mt-2 mb-2" htmlFor="imgurl">Image URL : </label>
-                <input type="text" className="form-control" id="imgurl" placeholder="Enter your post image url..." />
+                <input type="text" className="form-control" id="imgurl" placeholder="Enter your post image url..." onChange={(e) => setPostInfos({...postInfos, imageURL:e.target.value})}/>
+              </div>
+              <div className="d-flex flex-column align-items-center">
+              <label className="mt-2 mb-2" style={{fontSize:"1.1rem",fontWeight:"bold"}}>Image Preview </label>
+              <img src={postInfos.imageURL} class="img-thumbnail" onError={(e) => e.target.src = "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png"}></img>
               </div>
             </form>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Send</button>
+            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onMouseOver={updateErrors} onClick={sendPost}>Send</button>
             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
@@ -35,4 +81,4 @@ const NewPost = () => {
   )
 }
 
-export default NewPost
+export default NewPost;
