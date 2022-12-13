@@ -1,0 +1,26 @@
+
+.add-post-div {
+    width: 10rem;
+    height: 2.2rem;
+    position: relative;
+    overflow: hidden;
+
+    .new-post-text {
+        position: absolute;
+        right: 2.95rem;
+        text-shadow: -3px 5px 5px rgba(116,57,57,0.53);
+        transform: translateY(-120%);
+        transition: all 0.35s ease-in-out;
+    }
+    .add-button {
+        position: absolute;
+        right: 0px;
+        transition: all 0.35s ease-in-out;
+        &:hover {
+            font-size: 2.5rem !important;
+        }
+        &:hover + .new-post-text{
+            transform: translateY(0%);
+        }
+    }
+}

@@ -15,9 +15,15 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../authentication/firebase';
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/features/loginInfoSlice';
+import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 
 const NavbarAfterLogin = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
@@ -85,6 +91,17 @@ const NavbarAfterLogin = () => {
     const handleMyAccount = () => {
         navigate("/userinfos")
     }
+
+    const handleLogout = async () => {
+      try{
+        await signOut(auth);
+        dispatch(logout());
+        navigate("/");
+        alert("Logged out successfully!")
+      }catch(error){
+        console.log(error.message);
+      }
+    }
   
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -104,7 +121,7 @@ const NavbarAfterLogin = () => {
         onClose={handleMenuClose}
       >
         <MenuItem onClick={handleMyAccount}>My account</MenuItem>
-        <MenuItem >Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     );
   
@@ -164,11 +181,13 @@ const NavbarAfterLogin = () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
+            <SpeakerNotesIcon style={{fontSize:"2rem", marginRight:"0.4rem", cursor:"pointer"}} onClick={() => navigate("/")}/>
             <Typography
               variant="h6"
               noWrap
               component="div"
-              sx={{ display: { xs: 'none', sm: 'block' } }}
+              sx={{ display: { xs: 'none', sm: 'block' }, cursor:"pointer" }}
+              onClick={() => navigate("/")}
             >
               Blog App
             </Typography>
