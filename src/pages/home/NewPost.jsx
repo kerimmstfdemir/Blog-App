@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 import app from "../../authentication/firebase"
 import { getDatabase, ref, set, push } from "firebase/database"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 const NewPost = () => {
   const [postInfos, setPostInfos] = useState({
@@ -33,10 +33,29 @@ const NewPost = () => {
 }
 
 const sendPost = () => {
+  if(postInfos.postTitle.toString().length < 3){
+    alert("Post Title must be at least 3 characters!")
+  }
+
+  if(postInfos.postContents.toString().length < 20){
+    alert("Post Content must be at least 20 characters!")
+  }
+
   if(!titleError && !contentError) {
-    console.log("posted", postInfos)
-  }else {
-    console.log("not posted!");
+    try{
+      const database = getDatabase(app);
+      const postsRef = push(ref(database, "/posts"))
+      set(postsRef, postInfos)
+      setPostInfos({
+        postTitle:"",
+        postContents:"",
+        imageURL:""
+      })
+      alert("Sent your post..")
+    }catch(error){
+      console.log(error.massage)
+      alert("Post failed!")
+    } 
   }
 }
 
@@ -55,17 +74,17 @@ const sendPost = () => {
             <form>
               <div className="form-group">
                 <label className="mb-2" htmlFor="posttitle">Post Title : </label>
-                <input type="text" className="form-control" id="posttitle" placeholder="Enter your post title..." onChange={(e) => setPostInfos({...postInfos, postTitle:e.target.value})}/>
+                <input type="text" value={postInfos.postTitle} className="form-control" id="posttitle" placeholder="Enter your post title..." onChange={(e) => setPostInfos({...postInfos, postTitle:e.target.value})}/>
               </div>
               <div class="form-group">
                 <label className="mt-2 mb-2" for="exampleFormControlTextarea1">Post Contents : </label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" onChange={(e) => setPostInfos({...postInfos, postContents:e.target.value})}></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" value={postInfos.postContents} rows="3" onChange={(e) => setPostInfos({...postInfos, postContents:e.target.value})}></textarea>
               </div>
               <div className="form-group">
                 <label className="mt-2 mb-2" htmlFor="imgurl">Image URL : </label>
-                <input type="text" className="form-control" id="imgurl" placeholder="Enter your post image url..." onChange={(e) => setPostInfos({...postInfos, imageURL:e.target.value})}/>
+                <input type="text" className="form-control" id="imgurl" value={postInfos.imageURL} placeholder="Enter your post image url..." onChange={(e) => setPostInfos({...postInfos, imageURL:e.target.value})}/>
               </div>
-              <div className="d-flex flex-column align-items-center">
+              <div className="d-flex flex-column align-items-center mt-1">
               <label className="mt-2 mb-2" style={{fontSize:"1.1rem",fontWeight:"bold"}}>Image Preview </label>
               <img src={postInfos.imageURL} class="img-thumbnail" onError={(e) => e.target.src = "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png"}></img>
               </div>
