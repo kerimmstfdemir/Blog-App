@@ -86,7 +86,7 @@ const sendPost = () => {
               </div>
               <div className="d-flex flex-column align-items-center mt-1">
               <label className="mt-2 mb-2" style={{fontSize:"1.1rem",fontWeight:"bold"}}>Image Preview </label>
-              <img src={postInfos.imageURL} class="img-thumbnail" onError={(e) => e.target.src = "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png"}></img>
+              <img src={postInfos.imageURL} className="img-thumbnail" onError={(e) => e.target.src = "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png"}></img>
               </div>
             </form>
           </div>
