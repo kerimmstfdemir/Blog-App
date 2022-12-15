@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
+import UserPosts from "../components/UserPosts"
 import Home from "../pages/home/Home"
 import Login from "../pages/login/Login"
 import { PostDetails } from "../pages/postDetails/PostDetails"
@@ -18,6 +19,9 @@ const AppRouter = () => {
         <Route path="/register" element={<Register />}/>
         <Route path="/userinfos" element={<PrivateRouter />}>
           <Route path="" element={<ProfileInfos />}/>
+        </Route>
+        <Route path="/userposts" element={<PrivateRouter />}>
+          <Route path="" element={<UserPosts />}/>
         </Route>
         <Route path="/postDetails" element={<PrivateRouter/>}>
           <Route path="" element={<PostDetails />}/>

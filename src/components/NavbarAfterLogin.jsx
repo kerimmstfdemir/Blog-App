@@ -91,6 +91,9 @@ const NavbarAfterLogin = () => {
     const handleMyAccount = () => {
         navigate("/userinfos")
     }
+    const userPosts = () => {
+      navigate("/userposts")
+    }
 
     const handleLogout = async () => {
       try{
@@ -121,6 +124,7 @@ const NavbarAfterLogin = () => {
         onClose={handleMenuClose}
       >
         <MenuItem onClick={handleMyAccount}>My account</MenuItem>
+        <MenuItem onClick={userPosts}>My Posts</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     );
