@@ -2,13 +2,17 @@
 import app from "../../authentication/firebase"
 import { getDatabase, ref, set, push } from "firebase/database"
 import { useState } from "react"
+import { useSelector } from "react-redux"
 
 const NewPost = () => {
+  const { userInfo:{displayName} } = useSelector((state) => state.loginInfos)
+
   const [postInfos, setPostInfos] = useState({
     postTitle:"",
     postContents:"",
-    imageURL:""
+    imageURL:"",
   })
+  const [date, setDate] = useState("")
 
   const [ titleError, setTitleError ] = useState(true)
   const [ contentError, setContentError ] = useState(true)
@@ -17,6 +21,7 @@ const NewPost = () => {
   console.log("contentError : ", contentError);
 
   const updateErrors = () => {
+    const sendingDate = new Date()
     //? Post title control
     if(postInfos.postTitle.toString().length < 3){
       setTitleError(true)
@@ -30,9 +35,12 @@ const NewPost = () => {
     }else {
       setContentError(false)
     }
+
+    setDate(sendingDate)
 }
 
 const sendPost = () => {
+
   if(postInfos.postTitle.toString().length < 3){
     alert("Post Title must be at least 3 characters!")
   }
@@ -45,7 +53,11 @@ const sendPost = () => {
     try{
       const database = getDatabase(app);
       const postsRef = push(ref(database, "/posts"))
-      set(postsRef, postInfos)
+      set(postsRef, {
+        author: displayName,
+        date:date.toString(),
+        ...postInfos
+      })
       setPostInfos({
         postTitle:"",
         postContents:"",
@@ -60,6 +72,7 @@ const sendPost = () => {
 }
 
   console.log(postInfos);
+  console.log(typeof date.toString())
     return (
     <div className="modal" id="newpost" tabIndex={-1}>
       <div className="modal-dialog">

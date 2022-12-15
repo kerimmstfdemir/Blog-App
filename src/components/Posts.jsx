@@ -3,41 +3,26 @@ import { getDatabase, onValue, ref } from "firebase/database"
 import app from "../authentication/firebase"
 import { useSelector, useDispatch } from "react-redux"
 import { getPosts } from "../redux/features/postsSlice"
-import { useEffect, useState } from "react"
-import { styled } from '@mui/material/styles';
+import { useEffect } from "react"
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
 const Posts = () => {
     const dispatch = useDispatch();
     const { posts } = useSelector((state) => state.postsSlice)
-    const [expanded, setExpanded] = useState(false);
 
     console.log(posts);
-
-    const ExpandMore = styled((props) => {
-        const { expand, ...other } = props;
-        return <IconButton {...other} />;
-    })(({ theme, expand }) => ({
-        transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-        marginLeft: 'auto',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    }));
 
     useEffect(() => {
         const database = getDatabase(app);
@@ -54,13 +39,30 @@ const Posts = () => {
     }, [])
     return (
         <div className="d-flex justify-content-center flex-wrap m-2 mt-5" style={{gap:"1.5rem"}}>
-            {posts.map((item) => {
+            {posts?.map((item) => {
+                const months = {
+                    "Jan" : "January",
+                    "Feb" : "February",
+                    "Mar" : "March",
+                    "Apr" : "April",
+                    "May" : "May",
+                    "Jun" : "June",
+                    "Aug" : "August",
+                    "Sep" : "September",
+                    "Sept" : "September",
+                    "Oct" : "October",
+                    "Nov" : "November",
+                    "Dec" : "December",
+                }
+                const { date } = item;
+                const dateFormat = date.split(" ")
+                console.log(dateFormat)
                 return (
                     <Card sx={{ maxWidth: 345 }}>
                         <CardHeader
                             avatar={
                                 <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                                    K
+                                    {item?.author[0]}
                                 </Avatar>
                             }
                             action={
@@ -68,8 +70,8 @@ const Posts = () => {
                                     <MoreVertIcon />
                                 </IconButton>
                             }
-                            title="Shrimp and Chorizo Paella"
-                            subheader="September 14, 2016"
+                            title={item?.author}
+                            subheader={`${months[dateFormat[1]]} ${dateFormat[2]}, ${dateFormat[3]} ${dateFormat[4].slice(0,5)}`}
                         />
                         <CardMedia
                             component="img"
@@ -92,8 +94,6 @@ const Posts = () => {
                                 <ShareIcon />
                             </IconButton>
                         </CardActions>
-                        <Collapse in={expanded} timeout="auto" unmountOnExit>
-                        </Collapse>
                     </Card>
                 )
             })}
