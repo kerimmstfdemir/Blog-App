@@ -11,16 +11,21 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import CommentIcon from '@mui/icons-material/Comment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box } from "@mui/system"
+import { useNavigate } from "react-router-dom"
 
 
 const Posts = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { posts } = useSelector((state) => state.postsSlice)
+    const { loginInformation } = useSelector((state) => state.loginInfos)
 
     console.log(posts);
 
@@ -37,6 +42,14 @@ const Posts = () => {
             dispatch(getPosts({ posts: postsArray }))
         })
     }, [])
+
+    const postDetails = () => {
+        if(loginInformation){
+            navigate("/postDetails")
+        }else{
+            alert("Log in for see post details!")
+        }
+    }
     return (
         <div className="d-flex justify-content-center flex-wrap m-2 mt-5" style={{gap:"1.5rem"}}>
             {posts?.map((item) => {
@@ -80,20 +93,30 @@ const Posts = () => {
                             alt={item.postTitle}
                         />
                         <CardContent>
-                            <Typography variant="body2" color="text.secondary">
-                                This impressive paella is a perfect party dish and a fun meal to cook
-                                together with your guests. Add 1 cup of frozen peas along with the mussels,
-                                if you like.
+                            <Typography variant="h6" color="text.primary" sx={{marginBottom:"-1rem"}}>
+                                {item?.postTitle}
                             </Typography>
                         </CardContent>
+                        <CardContent sx={{border:"2px solid green", height:"6rem"}}>
+                            <Typography variant="body2" color="text.secondary">
+                                {`${item?.postContents.slice(0,100)}...`}
+                            </Typography>
+                        </CardContent>
+                        <Box className="d-flex flex-row justify-content-between">
                         <CardActions disableSpacing>
                             <IconButton aria-label="add to favorites">
                                 <FavoriteIcon />
                             </IconButton>
                             <IconButton aria-label="share">
-                                <ShareIcon />
+                                <CommentIcon />
                             </IconButton>
                         </CardActions>
+                        <CardActions disableSpacing>
+                            <IconButton>
+                            <ReadMoreIcon sx={{fontSize:"1.75rem"}} onClick={postDetails}/>
+                            </IconButton>
+                        </CardActions>
+                        </Box>
                     </Card>
                 )
             })}
