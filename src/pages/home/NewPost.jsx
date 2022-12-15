@@ -13,7 +13,7 @@ const NewPost = () => {
     imageURL:"",
   })
   const [date, setDate] = useState("")
-
+  const [imgSrcError, setImgSrcError] = useState(false)
   const [ titleError, setTitleError ] = useState(true)
   const [ contentError, setContentError ] = useState(true)
 
@@ -39,6 +39,16 @@ const NewPost = () => {
     setDate(sendingDate)
 }
 
+const handleImgUrl = (e) => {
+  setPostInfos({...postInfos, imageURL:e.target.value})
+  setImgSrcError(false)
+}
+
+const imgOnError = (e) => {
+  e.target.src = "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png"
+  setImgSrcError(true)
+}
+
 const sendPost = () => {
 
   if(postInfos.postTitle.toString().length < 3){
@@ -56,7 +66,8 @@ const sendPost = () => {
       set(postsRef, {
         author: displayName,
         date:date.toString(),
-        ...postInfos
+        ...postInfos,
+        imageURL: imgSrcError ? "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png" : postInfos.imageURL
       })
       setPostInfos({
         postTitle:"",
@@ -95,11 +106,11 @@ const sendPost = () => {
               </div>
               <div className="form-group">
                 <label className="mt-2 mb-2" htmlFor="imgurl">Image URL : </label>
-                <input type="text" className="form-control" id="imgurl" value={postInfos.imageURL} placeholder="Enter your post image url..." onChange={(e) => setPostInfos({...postInfos, imageURL:e.target.value})}/>
+                <input type="text" className="form-control" id="imgurl" value={postInfos.imageURL} placeholder="Enter your post image url..." onChange={handleImgUrl}/>
               </div>
               <div className="d-flex flex-column align-items-center mt-1">
               <label className="mt-2 mb-2" style={{fontSize:"1.1rem",fontWeight:"bold"}}>Image Preview </label>
-              <img src={postInfos.imageURL} className="img-thumbnail" onError={(e) => e.target.src = "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png"}></img>
+              <img src={postInfos.imageURL} className="img-thumbnail" onError={imgOnError}></img>
               </div>
             </form>
           </div>
