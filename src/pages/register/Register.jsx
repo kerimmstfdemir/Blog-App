@@ -6,6 +6,8 @@ import { auth } from "../../authentication/firebase"
 import { registerInfos } from "../../redux/features/registerSlice"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { getDatabase, ref, set, push } from "firebase/database"
+import app from "../../authentication/firebase"
 
 const Register = () => {
   const navigate = useNavigate();
@@ -55,10 +57,20 @@ const Register = () => {
 
     if(agreeTerms && !emailError && !passwordError && matchPassword && (name.toString().length >= 3)){
       try {
-        await createUserWithEmailAndPassword(auth, email, password)
+        const { user } = await createUserWithEmailAndPassword(auth, email, password)
         await updateProfile(auth.currentUser, {
           displayName: name
         })
+        try{
+          const database = getDatabase(app)
+          const userRef = ref(database, `/users/${user.uid}`)
+          set(userRef, {
+            username:user.displayName,
+            likedPosts: 0
+          })
+        }catch(error){
+          console.log(error.message);
+        }
         navigate("/login")
         alert("Registration Successful!")
       } catch(error) {

@@ -13,7 +13,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
+import { indigo } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentIcon from '@mui/icons-material/Comment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -74,7 +74,7 @@ const Posts = () => {
                     <Card sx={{ maxWidth: 345 }}>
                         <CardHeader
                             avatar={
-                                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                                <Avatar sx={{ bgcolor: indigo[400] }} aria-label="recipe">
                                     {item?.author[0]}
                                 </Avatar>
                             }
@@ -97,8 +97,8 @@ const Posts = () => {
                                 {item?.postTitle}
                             </Typography>
                         </CardContent>
-                        <CardContent sx={{border:"2px solid green", height:"6rem"}}>
-                            <Typography variant="body2" color="text.secondary">
+                        <CardContent sx={{height:"6rem"}}>
+                            <Typography variant="body2" color="text.secondary" sx={{cursor:"pointer"}} onClick={postDetails}>
                                 {`${item?.postContents.slice(0,100)}...`}
                             </Typography>
                         </CardContent>

@@ -3,11 +3,12 @@ import "./login.css"
 import googleicon from "../../assets/google-icon.png"
 import { useSelector, useDispatch } from "react-redux"
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
-import { auth } from "../../authentication/firebase"
+import app, { auth } from "../../authentication/firebase"
 import { loginInfos, loginSuccess } from "../../redux/features/loginInfoSlice"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import ForgotPassword from "./ForgotPassword"
+import { getDatabase, ref, set } from "firebase/database"
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -58,6 +59,18 @@ const Login = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
         const { email: emailAddress, displayName, metadata: { creationTime, lastSignInTime }, uid, photoURL } = result.user
+
+        try{
+          const database = getDatabase(app);
+          const userRef = ref(database, `/users/${uid}`)
+          set(userRef, {
+            username: displayName,
+            likedPosts: 0
+          })
+        }catch(error){
+          console.log(error.message)
+        }
+
         dispatch((loginSuccess({ ...loginInforms, userInfo: { displayName, metadata: { creationTime, lastSignInTime }, uid, photoURL }, email: emailAddress })))
         navigate("/")
         alert("Successfully logged in with Google!")

@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/alt-text */
 import app from "../../authentication/firebase"
-import { getDatabase, ref, set, push } from "firebase/database"
+import { getDatabase, ref, set, push, onValue } from "firebase/database"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 
 const NewPost = () => {
-  const { userInfo:{displayName} } = useSelector((state) => state.loginInfos)
+  const { userInfo:{displayName, uid} } = useSelector((state) => state.loginInfos)
 
   const [postInfos, setPostInfos] = useState({
     postTitle:"",
@@ -63,8 +63,10 @@ const sendPost = () => {
     try{
       const database = getDatabase(app);
       const postsRef = push(ref(database, "/posts"))
+
       set(postsRef, {
         author: displayName,
+        uid,
         date:date.toString(),
         ...postInfos,
         imageURL: imgSrcError ? "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png" : postInfos.imageURL
