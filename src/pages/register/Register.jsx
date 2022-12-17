@@ -66,7 +66,8 @@ const Register = () => {
           const userRef = ref(database, `/users/${user.uid}`)
           set(userRef, {
             username:user.displayName,
-            likedPosts: 0,
+            likedPosts: "",
+            messages:""
           })
         }catch(error){
           console.log(error.message);

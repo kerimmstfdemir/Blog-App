@@ -68,6 +68,8 @@ const sendPost = () => {
         author: displayName,
         uid,
         date:date.toString(),
+        numberOfLike: 0,
+        numberOfCommnets: 0,
         ...postInfos,
         imageURL: imgSrcError ? "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png" : postInfos.imageURL
       })

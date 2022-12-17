@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { getDatabase, onValue, ref } from "firebase/database"
+import { getDatabase, onValue, ref, set, update } from "firebase/database"
 import app from "../authentication/firebase"
 import { useSelector, useDispatch } from "react-redux"
-import { getPosts } from "../redux/features/postsSlice"
-import { useEffect } from "react"
+import { getPosts, getUser, updateFavorites } from "../redux/features/postsSlice"
+import { useEffect, useState } from "react"
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -24,14 +24,15 @@ import { useNavigate } from "react-router-dom"
 const Posts = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { posts } = useSelector((state) => state.postsSlice)
-    const { loginInformation } = useSelector((state) => state.loginInfos)
+    const { posts, user } = useSelector((state) => state.postsSlice)
+    const { loginInformation, userInfo } = useSelector((state) => state.loginInfos)
 
-    console.log(posts);
+    console.log(user?.likedPosts)
 
     useEffect(() => {
         const database = getDatabase(app);
         const postsRef = ref(database, "/posts")
+        const userRef = ref(database, `/users/${userInfo?.uid}`)
         onValue(postsRef, (snapshot) => {
             const data = snapshot.val()
             const postsArray = []
@@ -41,6 +42,12 @@ const Posts = () => {
             }
             dispatch(getPosts({ posts: postsArray.reverse() }))
         })
+
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val()
+            dispatch(getUser({user: data}))
+        })
+        // dispatch(updateFavorites({likedPosts:user?.likedPosts}))
     }, [])
 
     const postDetails = () => {
@@ -70,6 +77,19 @@ const Posts = () => {
                 const { date } = item;
                 const dateFormat = date.split(" ")
                 console.log(dateFormat)
+
+                const addFavorite = () => {
+                console.log(item.id);
+                dispatch(updateFavorites({likedPosts:[...user?.likedPosts, item.id]}))
+                    try{
+                        const database = getDatabase(app);
+                        const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
+                        set(userLikedRef, user?.likedPosts)
+                    }catch(error){
+                        console.log(error.message);
+                    }
+                }
+
                 return (
                     <Card sx={{ maxWidth: 345 }}>
                         <CardHeader
@@ -105,10 +125,12 @@ const Posts = () => {
                         <Box className="d-flex flex-row justify-content-between">
                         <CardActions disableSpacing>
                             <IconButton aria-label="add to favorites">
-                                <FavoriteIcon />
+                                <FavoriteIcon style={{marginRight:"0.4rem"}} onClick={addFavorite}/>
+                                <span style={{fontSize:"1.25rem"}}>{item?.numberOfLike}</span>
                             </IconButton>
                             <IconButton aria-label="share">
-                                <CommentIcon />
+                                <CommentIcon style={{marginRight:"0.4rem"}} />
+                                <span style={{fontSize:"1.25rem"}}>{item?.numberOfCommnets}</span>
                             </IconButton>
                         </CardActions>
                         <CardActions disableSpacing>
