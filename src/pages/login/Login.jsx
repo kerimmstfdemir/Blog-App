@@ -8,7 +8,8 @@ import { loginInfos, loginSuccess } from "../../redux/features/loginInfoSlice"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import ForgotPassword from "./ForgotPassword"
-import { getDatabase, ref, set } from "firebase/database"
+import { getDatabase, onValue, ref, set } from "firebase/database"
+import { getUser } from "../../redux/features/postsSlice"
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -18,7 +19,8 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState();
 
   const loginInforms = useSelector((state) => state.loginInfos)
-  const { loginInformation, email, password, userInfo } = loginInforms
+  const { user:getUser } = useSelector((state) => state.postsSlice)
+  const { email, password, userInfo } = loginInforms
 
   const googleProvider = new GoogleAuthProvider();
 
@@ -46,12 +48,28 @@ const Login = () => {
         const { user } = await signInWithEmailAndPassword(auth, email, password)
         const { email: emailAddress, displayName, uid, metadata: { creationTime, lastSignInTime } } = user;
         dispatch(loginSuccess({ ...loginInforms, userInfo: { displayName, uid, metadata: { creationTime, lastSignInTime } }, email: emailAddress }))
+
+        try{
+          const database = getDatabase(app);
+          const userRef = ref(database, `/users/${userInfo?.uid}`)
+        
+          onValue(userRef, (snapshot) => {
+            const data = snapshot.val()
+            console.log(data)
+           dispatch(getUser({user: data}))
+      })
+        }catch(error){
+          console.log(error.message);
+        }
+        
         navigate("/")
         alert("Logged in successfully!")
       } catch (error) {
         console.log(error.message)
         alert("Login failed!")
       }
+
+
     }
   }
 

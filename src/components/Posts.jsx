@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { getDatabase, onValue, ref, set, update } from "firebase/database"
 import app from "../authentication/firebase"
@@ -27,12 +28,12 @@ const Posts = () => {
     const { posts, user } = useSelector((state) => state.postsSlice)
     const { loginInformation, userInfo } = useSelector((state) => state.loginInfos)
 
-    console.log(user?.likedPosts)
+    console.log(user.likedPosts)
 
     useEffect(() => {
         const database = getDatabase(app);
         const postsRef = ref(database, "/posts")
-        const userRef = ref(database, `/users/${userInfo?.uid}`)
+
         onValue(postsRef, (snapshot) => {
             const data = snapshot.val()
             const postsArray = []
@@ -43,49 +44,56 @@ const Posts = () => {
             dispatch(getPosts({ posts: postsArray.reverse() }))
         })
 
-        onValue(userRef, (snapshot) => {
-            const data = snapshot.val()
-            dispatch(getUser({user: data}))
-        })
-        // dispatch(updateFavorites({likedPosts:user?.likedPosts}))
     }, [])
 
     const postDetails = () => {
-        if(loginInformation){
+        if (loginInformation) {
             navigate("/postDetails")
-        }else{
+        } else {
             alert("Log in for see post details!")
         }
     }
     return (
-        <div className="d-flex justify-content-center flex-wrap m-2 mt-5" style={{gap:"1.5rem"}}>
+        <div className="d-flex justify-content-center flex-wrap m-2 mt-5" style={{ gap: "1.5rem" }}>
             {posts?.map((item) => {
                 const months = {
-                    "Jan" : "January",
-                    "Feb" : "February",
-                    "Mar" : "March",
-                    "Apr" : "April",
-                    "May" : "May",
-                    "Jun" : "June",
-                    "Aug" : "August",
-                    "Sep" : "September",
-                    "Sept" : "September",
-                    "Oct" : "October",
-                    "Nov" : "November",
-                    "Dec" : "December",
+                    "Jan": "January",
+                    "Feb": "February",
+                    "Mar": "March",
+                    "Apr": "April",
+                    "May": "May",
+                    "Jun": "June",
+                    "Aug": "August",
+                    "Sep": "September",
+                    "Sept": "September",
+                    "Oct": "October",
+                    "Nov": "November",
+                    "Dec": "December",
                 }
                 const { date } = item;
                 const dateFormat = date.split(" ")
                 console.log(dateFormat)
 
                 const addFavorite = () => {
-                console.log(item.id);
-                dispatch(updateFavorites({likedPosts:[...user?.likedPosts, item.id]}))
-                    try{
+                    console.log(item.id);
+                    let sameIdCounter = 0;
+                    if(user?.likedPosts.length === 0){
+                        dispatch(updateFavorites({ likedPosts: [...user?.likedPosts, item?.id] }))
+                    }else{
+                        for(let i in user?.likedPosts){
+                            if(item.id === user.likedPosts[i]){
+                                sameIdCounter += 1
+                            }
+                        }
+                        if(sameIdCounter === 0) {
+                            dispatch(updateFavorites({ likedPosts: [...user?.likedPosts, item?.id] }))
+                        }
+                    }
+                    try {
                         const database = getDatabase(app);
                         const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
                         set(userLikedRef, user?.likedPosts)
-                    }catch(error){
+                    } catch (error) {
                         console.log(error.message);
                     }
                 }
@@ -104,7 +112,7 @@ const Posts = () => {
                                 </IconButton>
                             }
                             title={item?.author}
-                            subheader={`${months[dateFormat[1]]} ${dateFormat[2]}, ${dateFormat[3]} ${dateFormat[4].slice(0,5)}`}
+                            subheader={`${months[dateFormat[1]]} ${dateFormat[2]}, ${dateFormat[3]} ${dateFormat[4].slice(0, 5)}`}
                         />
                         <CardMedia
                             component="img"
@@ -113,31 +121,31 @@ const Posts = () => {
                             alt={item.postTitle}
                         />
                         <CardContent>
-                            <Typography variant="h6" color="text.primary" sx={{marginBottom:"-1rem"}}>
+                            <Typography variant="h6" color="text.primary" sx={{ marginBottom: "-1rem" }}>
                                 {item?.postTitle}
                             </Typography>
                         </CardContent>
-                        <CardContent sx={{height:"6rem"}}>
-                            <Typography variant="body2" color="text.secondary" sx={{cursor:"pointer"}} onClick={postDetails}>
-                                {`${item?.postContents.slice(0,100)}...`}
+                        <CardContent sx={{ height: "6rem" }}>
+                            <Typography variant="body2" color="text.secondary" sx={{ cursor: "pointer" }} onClick={postDetails}>
+                                {`${item?.postContents.slice(0, 100)}...`}
                             </Typography>
                         </CardContent>
                         <Box className="d-flex flex-row justify-content-between">
-                        <CardActions disableSpacing>
-                            <IconButton aria-label="add to favorites">
-                                <FavoriteIcon style={{marginRight:"0.4rem"}} onClick={addFavorite}/>
-                                <span style={{fontSize:"1.25rem"}}>{item?.numberOfLike}</span>
-                            </IconButton>
-                            <IconButton aria-label="share">
-                                <CommentIcon style={{marginRight:"0.4rem"}} />
-                                <span style={{fontSize:"1.25rem"}}>{item?.numberOfCommnets}</span>
-                            </IconButton>
-                        </CardActions>
-                        <CardActions disableSpacing>
-                            <IconButton>
-                            <ReadMoreIcon sx={{fontSize:"1.75rem"}} onClick={postDetails}/>
-                            </IconButton>
-                        </CardActions>
+                            <CardActions disableSpacing>
+                                <IconButton aria-label="add to favorites">
+                                    <FavoriteIcon style={{ marginRight: "0.4rem" }} onClick={addFavorite} />
+                                    <span style={{ fontSize: "1.25rem" }}>{item?.numberOfLike}</span>
+                                </IconButton>
+                                <IconButton aria-label="share">
+                                    <CommentIcon style={{ marginRight: "0.4rem" }} />
+                                    <span style={{ fontSize: "1.25rem" }}>{item?.numberOfCommnets}</span>
+                                </IconButton>
+                            </CardActions>
+                            <CardActions disableSpacing>
+                                <IconButton>
+                                    <ReadMoreIcon sx={{ fontSize: "1.75rem" }} onClick={postDetails} />
+                                </IconButton>
+                            </CardActions>
                         </Box>
                     </Card>
                 )
