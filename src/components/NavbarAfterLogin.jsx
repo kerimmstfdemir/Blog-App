@@ -20,6 +20,7 @@ import { auth } from '../authentication/firebase';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/features/loginInfoSlice';
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
+import { logoutCase } from '../redux/features/postsSlice';
 
 const NavbarAfterLogin = () => {
     const navigate = useNavigate();
@@ -99,6 +100,7 @@ const NavbarAfterLogin = () => {
       try{
         await signOut(auth);
         dispatch(logout());
+        dispatch(logoutCase())
         navigate("/");
         alert("Logged out successfully!")
       }catch(error){

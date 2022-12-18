@@ -20,8 +20,9 @@ const postsSlice = createSlice({
         updateFavorites:(state, action) => {
             state.user.likedPosts = action.payload.likedPosts
         },
+        logoutCase: () => initialStates
     }
 })
 
-export const { getPosts, getUser, updateFavorites } = postsSlice.actions;
+export const { getPosts, getUser, updateFavorites, logoutCase } = postsSlice.actions;
 export default postsSlice.reducer;

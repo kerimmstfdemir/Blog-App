@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { getDatabase, onValue, ref, set, update } from "firebase/database"
+import { getDatabase, onValue, ref, remove, set, update } from "firebase/database"
 import app from "../authentication/firebase"
 import { useSelector, useDispatch } from "react-redux"
-import { getPosts, getUser, updateFavorites } from "../redux/features/postsSlice"
-import { useEffect, useState } from "react"
+import { getPosts, updateFavorites } from "../redux/features/postsSlice"
+import { useEffect } from "react"
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -20,7 +20,7 @@ import CommentIcon from '@mui/icons-material/Comment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from "@mui/system"
 import { useNavigate } from "react-router-dom"
-
+import { async } from "@firebase/util"
 
 const Posts = () => {
     const dispatch = useDispatch();
@@ -28,7 +28,7 @@ const Posts = () => {
     const { posts, user } = useSelector((state) => state.postsSlice)
     const { loginInformation, userInfo } = useSelector((state) => state.loginInfos)
 
-    console.log(user.likedPosts)
+    console.log(user?.likedPosts)
 
     useEffect(() => {
         const database = getDatabase(app);
@@ -44,7 +44,7 @@ const Posts = () => {
             dispatch(getPosts({ posts: postsArray.reverse() }))
         })
 
-    }, [])
+    }, [user])
 
     const postDetails = () => {
         if (loginInformation) {
@@ -72,29 +72,37 @@ const Posts = () => {
                 }
                 const { date } = item;
                 const dateFormat = date.split(" ")
-                console.log(dateFormat)
 
                 const addFavorite = () => {
                     console.log(item.id);
-                    let sameIdCounter = 0;
-                    if(user?.likedPosts.length === 0){
-                        dispatch(updateFavorites({ likedPosts: [...user?.likedPosts, item?.id] }))
+                    let sameLikedId = false;
+                    let updateLikedArray = []
+                    if(user?.likedPosts?.keys().length === 0){
+                        dispatch(updateFavorites({ likedPosts: [ item?.id] }))
                     }else{
                         for(let i in user?.likedPosts){
-                            if(item.id === user.likedPosts[i]){
-                                sameIdCounter += 1
+                            if(item?.id === user?.likedPosts[i]){
+                                sameLikedId = true;
+                            }else{
+                                updateLikedArray.push(user.likedPosts[i])
                             }
                         }
-                        if(sameIdCounter === 0) {
-                            dispatch(updateFavorites({ likedPosts: [...user?.likedPosts, item?.id] }))
+                        if(sameLikedId === false) {
+                            updateLikedArray.push(item?.id)
                         }
+                        console.log(updateLikedArray);
                     }
-                    try {
+                    dispatch(updateFavorites({likedPosts: [...updateLikedArray]}))
+                }
+
+                const updateFirebaseFavorites = async() => {
+                    console.log("updateFirebase function blog work");
+                    try{
                         const database = getDatabase(app);
                         const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
-                        set(userLikedRef, user?.likedPosts)
-                    } catch (error) {
-                        console.log(error.message);
+                        await set(userLikedRef, user?.likedPosts)
+                    }catch(error) {
+                        console.log(error.message)
                     }
                 }
 
@@ -133,7 +141,11 @@ const Posts = () => {
                         <Box className="d-flex flex-row justify-content-between">
                             <CardActions disableSpacing>
                                 <IconButton aria-label="add to favorites">
-                                    <FavoriteIcon style={{ marginRight: "0.4rem" }} onClick={addFavorite} />
+                                    <FavoriteIcon style={{ marginRight: "0.4rem" }} onClick={() => {
+                                        addFavorite(); 
+                                        updateFirebaseFavorites();
+                                    }
+                                        } />
                                     <span style={{ fontSize: "1.25rem" }}>{item?.numberOfLike}</span>
                                 </IconButton>
                                 <IconButton aria-label="share">

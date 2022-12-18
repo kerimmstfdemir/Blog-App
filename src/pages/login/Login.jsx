@@ -19,7 +19,6 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState();
 
   const loginInforms = useSelector((state) => state.loginInfos)
-  const { user:getUser } = useSelector((state) => state.postsSlice)
   const { email, password, userInfo } = loginInforms
 
   const googleProvider = new GoogleAuthProvider();
@@ -51,7 +50,7 @@ const Login = () => {
 
         try{
           const database = getDatabase(app);
-          const userRef = ref(database, `/users/${userInfo?.uid}`)
+          const userRef = ref(database, `/users/${uid}`)
         
           onValue(userRef, (snapshot) => {
             const data = snapshot.val()
@@ -61,17 +60,15 @@ const Login = () => {
         }catch(error){
           console.log(error.message);
         }
-        
+
         navigate("/")
         alert("Logged in successfully!")
       } catch (error) {
         console.log(error.message)
         alert("Login failed!")
       }
-
-
     }
-  }
+  };
 
   const signInWithGoogle = () => {
     signInWithPopup(auth, googleProvider)
