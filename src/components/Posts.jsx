@@ -20,7 +20,6 @@ import CommentIcon from '@mui/icons-material/Comment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from "@mui/system"
 import { useNavigate } from "react-router-dom"
-import { async } from "@firebase/util"
 
 const Posts = () => {
     const dispatch = useDispatch();
@@ -28,7 +27,17 @@ const Posts = () => {
     const { posts, user } = useSelector((state) => state.postsSlice)
     const { loginInformation, userInfo } = useSelector((state) => state.loginInfos)
 
-    console.log(user?.likedPosts)
+    const updateFirebaseFavorites = async() => {
+        console.log("updateFirebase function blog work");
+        console.log(user?.likedPosts)
+        try{
+            const database = getDatabase(app);
+            const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
+            await set(userLikedRef, user?.likedPosts)
+        }catch(error) {
+            console.log(error.message)
+        }
+    }
 
     useEffect(() => {
         const database = getDatabase(app);
@@ -43,6 +52,8 @@ const Posts = () => {
             }
             dispatch(getPosts({ posts: postsArray.reverse() }))
         })
+
+        updateFirebaseFavorites()
 
     }, [user])
 
@@ -90,20 +101,8 @@ const Posts = () => {
                         if(sameLikedId === false) {
                             updateLikedArray.push(item?.id)
                         }
-                        console.log(updateLikedArray);
                     }
                     dispatch(updateFavorites({likedPosts: [...updateLikedArray]}))
-                }
-
-                const updateFirebaseFavorites = async() => {
-                    console.log("updateFirebase function blog work");
-                    try{
-                        const database = getDatabase(app);
-                        const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
-                        await set(userLikedRef, user?.likedPosts)
-                    }catch(error) {
-                        console.log(error.message)
-                    }
                 }
 
                 return (
@@ -142,8 +141,7 @@ const Posts = () => {
                             <CardActions disableSpacing>
                                 <IconButton aria-label="add to favorites">
                                     <FavoriteIcon style={{ marginRight: "0.4rem" }} onClick={() => {
-                                        addFavorite(); 
-                                        updateFirebaseFavorites();
+                                        addFavorite();
                                     }
                                         } />
                                     <span style={{ fontSize: "1.25rem" }}>{item?.numberOfLike}</span>
