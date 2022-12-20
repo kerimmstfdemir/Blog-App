@@ -1,10 +1,11 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { getDatabase, onValue, ref, remove, set, update } from "firebase/database"
 import app from "../authentication/firebase"
 import { useSelector, useDispatch } from "react-redux"
 import { getPosts, updateFavorites } from "../redux/features/postsSlice"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -26,16 +27,38 @@ const Posts = () => {
     const navigate = useNavigate();
     const { posts, user } = useSelector((state) => state.postsSlice)
     const { loginInformation, userInfo } = useSelector((state) => state.loginInfos)
+    const [ itemValues, setItemValues] = useState({})
 
     const updateFirebaseFavorites = async() => {
-        console.log("updateFirebase function blog work");
-        console.log(user?.likedPosts)
-        try{
-            const database = getDatabase(app);
-            const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
-            await set(userLikedRef, user?.likedPosts)
-        }catch(error) {
-            console.log(error.message)
+        const database = getDatabase(app);
+        console.log("updateFirebase function work");
+
+        if(Object.keys(user?.likedPosts).length !== 0){
+            try{
+                const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
+                await set(userLikedRef, user?.likedPosts)
+            }catch(error) {
+                console.log(error.message)
+            }
+        }
+
+        if(Object.keys(itemValues).length !== 0){
+            try{
+                const { id, numberOfLike } = itemValues
+                const likedPostRef = ref(database, `posts/${id}`)
+                console.log("liked updated prosess worked..");
+                console.log(user?.likedPosts?.includes(id));
+                if(user?.likedPosts?.includes(id)){
+                    update(likedPostRef, {numberOfLike: numberOfLike + 1})
+                    setItemValues({})
+                }else{
+                    update(likedPostRef, {numberOfLike: numberOfLike - 1})
+                    setItemValues({})
+                }
+                
+            }catch(error){
+                console.log(error.message);
+            }
         }
     }
 
@@ -52,9 +75,7 @@ const Posts = () => {
             }
             dispatch(getPosts({ posts: postsArray.reverse() }))
         })
-
         updateFirebaseFavorites()
-
     }, [user])
 
     const postDetails = () => {
@@ -64,6 +85,7 @@ const Posts = () => {
             alert("Log in for see post details!")
         }
     }
+
     return (
         <div className="d-flex justify-content-center flex-wrap m-2 mt-5" style={{ gap: "1.5rem" }}>
             {posts?.map((item) => {
@@ -85,11 +107,11 @@ const Posts = () => {
                 const dateFormat = date.split(" ")
 
                 const addFavorite = () => {
-                    console.log(item.id);
+                    setItemValues(item)
                     let sameLikedId = false;
                     let updateLikedArray = []
                     if(user?.likedPosts?.keys().length === 0){
-                        dispatch(updateFavorites({ likedPosts: [ item?.id] }))
+                        updateLikedArray.push(item?.id)
                     }else{
                         for(let i in user?.likedPosts){
                             if(item?.id === user?.likedPosts[i]){
@@ -140,9 +162,7 @@ const Posts = () => {
                         <Box className="d-flex flex-row justify-content-between">
                             <CardActions disableSpacing>
                                 <IconButton aria-label="add to favorites">
-                                    <FavoriteIcon style={{ marginRight: "0.4rem" }} onClick={() => {
-                                        addFavorite();
-                                    }
+                                    <FavoriteIcon style={{ marginRight: "0.4rem", color: user?.likedPosts?.includes(item?.id) && "red"}} onClick={() => {loginInformation && addFavorite();}
                                         } />
                                     <span style={{ fontSize: "1.25rem" }}>{item?.numberOfLike}</span>
                                 </IconButton>
