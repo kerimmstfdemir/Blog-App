@@ -78,22 +78,40 @@ const Login = () => {
         try{
           const database = getDatabase(app);
           const userRef = ref(database, `/users/${uid}`)
-          set(userRef, {
-            username: displayName,
-            likedPosts: 0
-          })
+        
+          onValue(userRef, (snapshot) => {
+            const data = snapshot.val()
+            
+            if(data === null) {
+              try{
+                const database = getDatabase(app);
+                const userRef = ref(database, `/users/${uid}`)
+                set(userRef, {
+                  username: displayName,
+                  likedPosts: "",
+                  messages: "",
+                })
+      
+              }catch(error){
+                console.log(error.message)
+              }
+            }
+            
+           dispatch(getUser({user: data}))
+      })
         }catch(error){
-          console.log(error.message)
+          console.log(error.message);
+          console.log("NOT DATA")
         }
 
-        dispatch((loginSuccess({ ...loginInforms, userInfo: { displayName, metadata: { creationTime, lastSignInTime }, uid, photoURL }, email: emailAddress })))
+        dispatch(loginSuccess({ ...loginInforms, userInfo: { displayName, metadata: { creationTime, lastSignInTime }, uid, photoURL }, email: emailAddress }))
+
         navigate("/")
         alert("Successfully logged in with Google!")
-        console.log(result)
       })
+        
   }
 
-  console.log(loginInforms)
   return (
     <>
       <section className="vh-100">

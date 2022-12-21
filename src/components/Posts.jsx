@@ -110,7 +110,7 @@ const Posts = () => {
                     setItemValues(item)
                     let sameLikedId = false;
                     let updateLikedArray = []
-                    if(user?.likedPosts?.keys().length === 0){
+                    if(Object.keys(user?.likedPosts).length === 0){
                         updateLikedArray.push(item?.id)
                     }else{
                         for(let i in user?.likedPosts){
