@@ -33,15 +33,13 @@ const Posts = () => {
         const database = getDatabase(app);
         console.log("updateFirebase function work");
 
-        if(Object.keys(user?.likedPosts).length !== 0){
-            try{
-                const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
-                await set(userLikedRef, user?.likedPosts)
-            }catch(error) {
-                console.log(error.message)
-            }
+        try{
+            const userLikedRef = ref(database, `/users/${userInfo?.uid}/likedPosts/`)
+            await set(userLikedRef, user?.likedPosts)
+        }catch(error) {
+            console.log(error.message)
         }
-
+        
         if(Object.keys(itemValues).length !== 0){
             try{
                 const { id, numberOfLike } = itemValues
@@ -110,7 +108,7 @@ const Posts = () => {
                     setItemValues(item)
                     let sameLikedId = false;
                     let updateLikedArray = []
-                    if(Object.keys(user?.likedPosts).length === 0){
+                    if(String(user?.likedPosts).length === 0){
                         updateLikedArray.push(item?.id)
                     }else{
                         for(let i in user?.likedPosts){
