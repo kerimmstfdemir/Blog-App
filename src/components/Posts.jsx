@@ -166,7 +166,7 @@ const Posts = () => {
                                 </IconButton>
                                 <IconButton aria-label="share">
                                     <CommentIcon style={{ marginRight: "0.4rem" }} />
-                                    <span style={{ fontSize: "1.25rem" }}>{item?.numberOfCommnets}</span>
+                                    <span style={{ fontSize: "1.3rem" }}>{item?.numberOfCommnets}</span>
                                 </IconButton>
                             </CardActions>
                             <CardActions disableSpacing>

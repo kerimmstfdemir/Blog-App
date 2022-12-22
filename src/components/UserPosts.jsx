@@ -4,6 +4,8 @@ import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
@@ -14,11 +16,86 @@ import CommentIcon from '@mui/icons-material/Comment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from "@mui/system"
 import { Navigate } from "react-router-dom";
+import { useState } from "react";
+import EditUserPost from "./EditUserPost";
 
 const UserPosts = () => {
-    const { posts } = useSelector((state) => state.postsSlice)
+    const { posts, user } = useSelector((state) => state.postsSlice)
     const { loginInformation } = useSelector((state) => state.loginInfos)
     const { userInfo:{uid} } = useSelector((state) => state.loginInfos)
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+    const [ postItem, setPostItem] = useState({})
+  
+    const isMenuOpen = Boolean(anchorEl);
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const handleMobileMenuClose = () => {
+        setMobileMoreAnchorEl(null);
+      };
+
+    const handleProfileMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        handleMobileMenuClose();
+    };
+    
+    const menuId = 'primary-search-account-menu';
+    const renderMenu = (
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        id={menuId}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleMenuClose} data-bs-toggle="modal" data-bs-target="#editpost">Edit Post</MenuItem>
+        <MenuItem>Delete</MenuItem>
+      </Menu>
+    );
+  
+    const mobileMenuId = 'primary-search-account-menu-mobile';
+    const renderMobileMenu = (
+      <Menu
+        anchorEl={mobileMoreAnchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        id={mobileMenuId}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={isMobileMenuOpen}
+        onClose={handleMobileMenuClose}
+      >
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+      </Menu>
+    );
 
     const postDetails = () => {
         if(loginInformation){
@@ -27,8 +104,7 @@ const UserPosts = () => {
             alert("Log in for see post details!")
         }
     }
-
-    console.log(posts);
+    
   return (
     <div className="d-flex flex-column align-items-center">
     <h2 className="mt-4">Your Posts</h2>
@@ -62,7 +138,7 @@ const UserPosts = () => {
                         }
                         action={
                             <IconButton aria-label="settings">
-                                <MoreVertIcon />
+                                <MoreVertIcon onMouseOver={() => setPostItem(item)} onClick={handleProfileMenuOpen}/>
                             </IconButton>
                         }
                         title={item?.author}
@@ -87,10 +163,12 @@ const UserPosts = () => {
                     <Box className="d-flex flex-row justify-content-between">
                     <CardActions disableSpacing>
                         <IconButton aria-label="add to favorites">
-                            <FavoriteIcon />
+                            <FavoriteIcon style={{marginRight: "0.4rem", color: user?.likedPosts?.includes(item?.id) && "red"}}/>
+                            <span style={{ fontSize: "1.25rem" }}>{item?.numberOfLike}</span>
                         </IconButton>
                         <IconButton aria-label="share">
-                            <CommentIcon />
+                            <CommentIcon style={{ marginRight: "0.4rem" }}/>
+                            <span style={{ fontSize: "1.3rem" }}>{item?.numberOfCommnets}</span>
                         </IconButton>
                     </CardActions>
                     <CardActions disableSpacing>
@@ -99,6 +177,9 @@ const UserPosts = () => {
                         </IconButton>
                     </CardActions>
                     </Box>
+                    {renderMobileMenu}
+                    {renderMenu}
+                    <EditUserPost postItem={postItem} setPostItem={setPostItem}/>
                 </Card>
                     }
                 </>
