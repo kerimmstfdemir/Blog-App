@@ -18,6 +18,7 @@ import { Box } from "@mui/system"
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import EditUserPost from "./EditUserPost";
+import { getDatabase, ref, remove } from "firebase/database";
 
 const UserPosts = () => {
     const { posts, user } = useSelector((state) => state.postsSlice)
@@ -43,6 +44,19 @@ const UserPosts = () => {
         setAnchorEl(null);
         handleMobileMenuClose();
     };
+
+    const deleteUserPost = () => {
+      const database = getDatabase();
+      const deletePostRef = ref(database, `/posts/${postItem?.id}`)
+      if (window.confirm('Are you sure you want to delete this post?')) {
+        // remove!
+        remove(deletePostRef)
+        alert('Post was removed!');
+      } else {
+        // Do nothing!
+        console.log('Post was not removed...');
+      }
+    }
     
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -62,7 +76,7 @@ const UserPosts = () => {
         onClose={handleMenuClose}
       >
         <MenuItem onClick={handleMenuClose} data-bs-toggle="modal" data-bs-target="#editpost">Edit Post</MenuItem>
-        <MenuItem>Delete</MenuItem>
+        <MenuItem onClick={deleteUserPost}>Delete</MenuItem>
       </Menu>
     );
   

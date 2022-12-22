@@ -2,11 +2,8 @@
 import { getDatabase, ref, update } from "firebase/database";
 import app from "../authentication/firebase"
 import { useState } from "react"
-import { useSelector } from "react-redux";
 
 const EditUserPost = ({ postItem, setPostItem }) => {
-    const { posts } = useSelector((state) => state.postsSlice)
-
     const [date, setDate] = useState("")
     const [imgSrcError, setImgSrcError] = useState(false)
     const [titleError, setTitleError] = useState(true)
