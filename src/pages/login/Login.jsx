@@ -91,14 +91,21 @@ const Login = () => {
                   likedPosts: "",
                   messages: "",
                 })
-      
               }catch(error){
                 console.log(error.message)
               }
             }
-            
-           dispatch(getUser({user: data}))
       })
+
+        onValue(userRef, (snapshot) => {
+          const data = snapshot.val()
+          try{
+            dispatch(getUser({user:data}))
+          }catch(error){
+            console.log(error.message);
+          }
+        })
+
         }catch(error){
           console.log(error.message);
           console.log("NOT DATA")
