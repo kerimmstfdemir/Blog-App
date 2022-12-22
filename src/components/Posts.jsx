@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { getDatabase, onValue, ref, remove, set, update } from "firebase/database"
+import { getDatabase, onValue, ref, set, update } from "firebase/database"
 import app from "../authentication/firebase"
 import { useSelector, useDispatch } from "react-redux"
 import { getPosts, updateFavorites } from "../redux/features/postsSlice"
