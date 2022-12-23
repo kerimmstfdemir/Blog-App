@@ -11,6 +11,8 @@ import IconButton from '@mui/material/IconButton';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import Typography from '@mui/material/Typography';
 import { indigo } from '@mui/material/colors';
+import DeleteIcon from '@mui/icons-material/Delete';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CommentIcon from '@mui/icons-material/Comment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -75,8 +77,14 @@ const UserPosts = () => {
         open={isMenuOpen}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleMenuClose} data-bs-toggle="modal" data-bs-target="#editpost">Edit Post</MenuItem>
-        <MenuItem onClick={deleteUserPost}>Delete</MenuItem>
+        <MenuItem onClick={handleMenuClose} data-bs-toggle="modal" data-bs-target="#editpost">
+        <BorderColorIcon style={{color:"navy", marginRight:"0.3rem"}}/>
+          Edit Post
+          </MenuItem>
+        <MenuItem onClick={deleteUserPost}>
+        <DeleteIcon style={{color:"#730113", marginRight:"0.3rem"}}/>
+          Delete
+          </MenuItem>
       </Menu>
     );
   
