@@ -76,14 +76,6 @@ const Posts = () => {
         updateFirebaseFavorites()
     }, [user])
 
-    const postDetails = () => {
-        if (loginInformation) {
-            navigate("/postDetails")
-        } else {
-            alert("Log in for see post details!")
-        }
-    }
-
     return (
         <div className="d-flex justify-content-center flex-wrap m-2 mt-5" style={{ gap: "1.5rem" }}>
             {posts?.map((item) => {
@@ -123,6 +115,14 @@ const Posts = () => {
                         }
                     }
                     dispatch(updateFavorites({likedPosts: [...updateLikedArray]}))
+                }
+
+                const postDetails = () => {
+                    if (loginInformation) {
+                        navigate("/postDetails", {state:item})
+                    } else {
+                        alert("Log in for see post details!")
+                    }
                 }
 
                 return (
