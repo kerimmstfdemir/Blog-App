@@ -19,7 +19,7 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState();
 
   const loginInforms = useSelector((state) => state.loginInfos)
-  const { email, password, userInfo } = loginInforms
+  const { email, password } = loginInforms
 
   const googleProvider = new GoogleAuthProvider();
 
