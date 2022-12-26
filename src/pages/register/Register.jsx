@@ -6,7 +6,7 @@ import { auth } from "../../authentication/firebase"
 import { registerInfos } from "../../redux/features/registerSlice"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { getDatabase, ref, set, push } from "firebase/database"
+import { getDatabase, ref, set } from "firebase/database"
 import app from "../../authentication/firebase"
 
 const Register = () => {
