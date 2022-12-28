@@ -1,76 +1,49 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from 'react'
-import { Button, Comment, Form, Header } from 'semantic-ui-react'
+import "./comments.css"
 
 const Comments = () => (
-  <Comment.Group className='ui comments'>
-    <Header as='h3' className='ui dividing header' dividing>
-      Comments
-    </Header>
+    <>
+    <div>
+        <h3 style={{margin:"0rem 6rem"}}>Comments</h3>
+    </div>
+    <div className="mt-3 border border-primary container-div">
+        <div className="d-flex justify-content-center row">
+            <div className="col-md-12">
+                <div className="d-flex flex-column comment-section">
+                    <div className="bg-white p-2">
+                        <div className="d-flex flex-row user-info"><img className="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width={50} />
+                            <div className="d-flex flex-column justify-content-start ml-2"><span className="d-block font-weight-bold name">Marry Andrews</span><span className="date text-black-50">Shared publicly - Jan 2020</span></div>
+                        </div>
+                        <div className="mt-2">
+                            <p className="comment-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        </div>
+                    </div>
+                    <div className="bg-white">
+                        <div className="d-flex flex-row fs-12">
+                            <div className="like p-2 cursor"><i className="fa fa-thumbs-o-up" /><span className="ml-1">Like</span></div>
+                            <div className="like p-2 cursor"><i className="fa fa-commenting-o" /><span className="ml-1">Comment</span></div>
+                            <div className="like p-2 cursor"><i className="fa fa-share" /><span className="ml-1">Share</span></div>
+                        </div>
+                    </div>
 
-    <Comment>
-      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-      <Comment.Content>
-        <Comment.Author as='a'>Matt</Comment.Author>
-        <Comment.Metadata>
-          <div>Today at 5:42PM</div>
-        </Comment.Metadata>
-        <Comment.Text>How artistic!</Comment.Text>
-        <Comment.Actions>
-          <Comment.Action>Reply</Comment.Action>
-        </Comment.Actions>
-      </Comment.Content>
-    </Comment>
+                    {/* Sending Comment Area */}
 
-    <Comment>
-      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
-      <Comment.Content>
-        <Comment.Author as='a'>Elliot Fu</Comment.Author>
-        <Comment.Metadata>
-          <div>Yesterday at 12:30AM</div>
-        </Comment.Metadata>
-        <Comment.Text>
-          <p>This has been very useful for my research. Thanks as well!</p>
-        </Comment.Text>
-        <Comment.Actions>
-          <Comment.Action>Reply</Comment.Action>
-        </Comment.Actions>
-      </Comment.Content>
-      <Comment.Group>
-        <Comment>
-          <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
-          <Comment.Content>
-            <Comment.Author as='a'>Jenny Hess</Comment.Author>
-            <Comment.Metadata>
-              <div>Just now</div>
-            </Comment.Metadata>
-            <Comment.Text>Elliot you are always so right :)</Comment.Text>
-            <Comment.Actions>
-              <Comment.Action>Reply</Comment.Action>
-            </Comment.Actions>
-          </Comment.Content>
-        </Comment>
-      </Comment.Group>
-    </Comment>
-
-    <Comment>
-      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
-      <Comment.Content>
-        <Comment.Author as='a'>Joe Henderson</Comment.Author>
-        <Comment.Metadata>
-          <div>5 days ago</div>
-        </Comment.Metadata>
-        <Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
-        <Comment.Actions>
-          <Comment.Action>Reply</Comment.Action>
-        </Comment.Actions>
-      </Comment.Content>
-    </Comment>
-
-    <Form reply>
-      <Form.TextArea />
-      <Button content='Add Reply' labelPosition='left' icon='edit' primary />
-    </Form>
-  </Comment.Group>
+                    <div className="bg-light p-2">
+                        <div className="d-flex flex-row align-items-start">
+                            <img className="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width={50} />
+                            <textarea className="form-control ml-1 shadow-none textarea" defaultValue={""} />
+                        </div>
+                        <div className="mt-2 text-right">
+                            <button className="btn btn-primary btn-sm shadow-none" type="button">Post comment</button>
+                            <button className="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </>
 )
 
 export default Comments
