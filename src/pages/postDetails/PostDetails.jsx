@@ -1,10 +1,12 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { useLocation } from "react-router-dom"
+import Comments from "./Comments";
 
 export const PostDetails = () => {
   const { state: detailsPost } = useLocation();
 
   return (
+    <>
     <div className="card mb-3">
       <div className="d-flex flex-column align-items-center mt-4" style={{ gap: "1rem" }}>
         <img src={detailsPost?.imageURL} alt="Card image cap" style={{ width: "35rem" }} />
@@ -14,5 +16,7 @@ export const PostDetails = () => {
           <p>{detailsPost?.postContents}</p>
         </div>
     </div>
+    <Comments />
+    </>
   )
 }
