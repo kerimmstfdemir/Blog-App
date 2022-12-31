@@ -4,7 +4,6 @@ import Comments from "./Comments";
 
 export const PostDetails = () => {
   const { state: detailsPost } = useLocation();
-
   return (
     <>
     <div className="card mb-3">
@@ -16,7 +15,7 @@ export const PostDetails = () => {
           <p>{detailsPost?.postContents}</p>
         </div>
     </div>
-    <Comments />
+    <Comments detailsPost={detailsPost}/>
     </>
   )
 }

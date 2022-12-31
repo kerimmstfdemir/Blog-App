@@ -70,6 +70,7 @@ const sendPost = () => {
         date:date.toString(),
         numberOfLike: 0,
         numberOfCommnets: 0,
+        comments : "",
         ...postInfos,
         imageURL: imgSrcError ? "https://jobsalert.pk/wp-content/themes/jobs/images/default-blog-thumb.png" : postInfos.imageURL
       })
@@ -86,8 +87,6 @@ const sendPost = () => {
   }
 }
 
-  console.log(postInfos);
-  console.log(typeof date.toString())
     return (
     <div className="modal" id="newpost" tabIndex={-1}>
       <div className="modal-dialog">
