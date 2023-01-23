@@ -1,5 +1,6 @@
 ## Blog-App
 
+* This project has not taken its final form. Developments continue...
 * In this project, a Blog App. was developed in the React environment.
 * Google Firebase is used for backend operations such as Login and Register.
 * Also, Firebase Realtime Database was used for the user's operations such as posting, deleting, editing and commenting.
