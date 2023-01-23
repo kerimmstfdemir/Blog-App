@@ -4,6 +4,7 @@
 * Google Firebase is used for backend operations such as Login and Register.
 * Also, Firebase Realtime Database was used for the user's operations such as posting, deleting, editing and commenting.
 * You can access the live version of the project from the following link.
+
   https://blog-app-8zrv.onrender.com/
 
 ## Project Skeleton
